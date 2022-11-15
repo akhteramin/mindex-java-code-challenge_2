@@ -24,8 +24,6 @@ public class CompensationServiceImplTest {
     private String createCompensationUrl;
     private String getCompensationUrl;
 
-    @Autowired
-    private CompensationService compensationService;
 
     @LocalServerPort
     private int port;
@@ -53,8 +51,8 @@ public class CompensationServiceImplTest {
 
         Compensation testCompensation = new Compensation();
         testCompensation.setEmployee(createdEmployee);
-        testCompensation.setSalary(120000);
-        LocalDate date = LocalDate.of(2014, 2, 14);
+        testCompensation.setSalary(100000);
+        LocalDate date = LocalDate.now();
         testCompensation.setEffectiveDate(date);
 
         // Create Compensation checks
@@ -65,7 +63,7 @@ public class CompensationServiceImplTest {
 
 
         // Read Compensation checks
-        String x = createCompensation.getEmployee().getEmployeeId();
+        String addCompensation = createCompensation.getEmployee().getEmployeeId();
         Compensation readCompensation = restTemplate.getForEntity(getCompensationUrl, Compensation.class,
                 createCompensation.getEmployee().getEmployeeId()).getBody();
         assertEquals(testCompensation.getEmployee().getEmployeeId(), readCompensation.getEmployee().getEmployeeId());
