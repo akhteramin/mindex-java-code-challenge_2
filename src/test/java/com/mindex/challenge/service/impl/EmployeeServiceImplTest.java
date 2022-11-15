@@ -2,6 +2,9 @@ package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.service.EmployeeService;
+import com.mindex.challenge.data.ReportingStructure;
+
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,7 @@ public class EmployeeServiceImplTest {
 
     private String employeeUrl;
     private String employeeIdUrl;
+    private String reportingStructureUrl;
 
     @Autowired
     private EmployeeService employeeService;
@@ -38,6 +42,8 @@ public class EmployeeServiceImplTest {
     public void setup() {
         employeeUrl = "http://localhost:" + port + "/employee";
         employeeIdUrl = "http://localhost:" + port + "/employee/{id}";
+        reportingStructureUrl = "http://localhost:" + port + "/reportingStructure/{id}";
+
     }
 
     @Test
@@ -75,6 +81,15 @@ public class EmployeeServiceImplTest {
                         readEmployee.getEmployeeId()).getBody();
 
         assertEmployeeEquivalence(readEmployee, updatedEmployee);
+
+        // Reporting Structure checks
+        ReportingStructure readReportingStructure = new ReportingStructure();
+        readReportingStructure.setEmployee(createdEmployee);
+        if ( testEmployee.getDirectReports() != null) {
+            readReportingStructure.setNumberOfReports(testEmployee.getDirectReports().size());
+            assertNumberOfReports(createdEmployee, readReportingStructure);
+        }
+
     }
 
     private static void assertEmployeeEquivalence(Employee expected, Employee actual) {
@@ -82,5 +97,9 @@ public class EmployeeServiceImplTest {
         assertEquals(expected.getLastName(), actual.getLastName());
         assertEquals(expected.getDepartment(), actual.getDepartment());
         assertEquals(expected.getPosition(), actual.getPosition());
+    }
+
+    private static void assertNumberOfReports(Employee expected, ReportingStructure actual){
+        assertEquals(java.util.Optional.of(expected.getDirectReports().size()),actual.getNumberOfReports());
     }
 }
